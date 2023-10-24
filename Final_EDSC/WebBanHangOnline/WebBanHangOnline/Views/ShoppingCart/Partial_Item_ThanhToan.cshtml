@@ -1,0 +1,65 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.ShoppingCartItem>
+@using WebBanHangOnline.Common
+
+@if (Model != null && Model.Any())
+{
+    <h3>GIỎ HÀNG <span style="float:right;position:relative"><small>@Model.Count()</small></span></h3>
+    var i = 0;
+    var tongtien = decimal.Zero;
+    <div style="border:1px solid #808080;">
+        <table class="table">
+            @foreach (var item in Model)
+            {
+                tongtien += item.TotalPrice;
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@Common.FormatNumber(item.Price, 0)</td>
+                </tr>
+            }
+            <!-- Thêm giao diện nhập mã giảm giá -->
+            <tr>
+                <td>
+                    <label for="couponCode">Mã giảm giá:</label>
+                    <input type="text" class="form-control" id="couponCode" placeholder="Nhập Voucher" />
+                    <button type="button" class="btn btn-primary" id="applyCoupon">Áp dụng </button>
+                    <span id="couponMessage" class="text-danger"></span>
+                </td>
+                <td></td>
+            </tr>
+            <!-- Kết thúc giao diện nhập mã giảm giá -->
+            <tr>
+                <td>Tổng tiền</td>
+                <td id="total">@Common.FormatNumber(tongtien, 0)</td>
+            </tr>
+        </table>
+    </div>
+
+}
+else
+{
+
+}
+<script>
+    $(document).ready(function () {
+        $("#applyCoupon").click(function () {
+            var couponCode = $("#couponCode").val();
+            $.ajax({
+                url: '@Url.Action("CheckCoupon", "Shoppingcart")',
+                type: 'POST',
+                data: { code: couponCode },
+                success: function (response) {
+                    if (response.isValid) {
+                        // Cập nhật giá trị giảm giá và tổng tiền ở đây
+                        $('#total').text(response.totalFormatted);
+                        $("#couponMessage").text("Mã giảm giá đã được áp dụng.");
+                    } else {
+                        $("#couponMessage").text("Mã giảm giá không hợp lệ hoặc đã hết hạn.");
+                    }
+                },
+                error: function () {
+                    $("#couponMessage").text("Có lỗi xảy ra. Vui lòng thử lại.");
+                }
+            });
+        });
+    });
+</script>

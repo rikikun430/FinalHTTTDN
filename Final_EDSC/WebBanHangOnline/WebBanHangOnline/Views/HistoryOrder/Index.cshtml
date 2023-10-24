@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+
+<h2>Lịch sử mua hàng</h2>
+<div class="row">
+    <div class="col-md-12" id="load_data">
+        @Html.Action("Partial_Item_Cart", "ShoppingCart")
+    </div>
+    
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="custom-table-header">Mã đơn hàng</th>
+            <th class="custom-table-header">Ngày tạo</th>
+            <th class="custom-table-header">Tiền</th>
+            <th class="custom-table-header">Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td><a href="@Url.Action("OrderDetails", "HistoryOrder", new { id = order.Id })">@order.Code</a></td>
+                <td>@order.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td>@WebBanHangOnline.Common.Common.FormatNumber(order.TotalAmount, 0)</td>
+                <td>
+                    @{
+                        string status;
+                        if (order.OrderStatus == 0)
+                        {
+                            status = "Đang xử lí";
+                        }
+                        else if (order.OrderStatus == 1)
+                        {
+                            status = "Đang giao hàng";
+                        }
+                        else if (order.OrderStatus == 2)
+                        {
+                            status = "Hoàn thành";
+                        }
+                        else if (order.OrderStatus == 3)
+                        {
+                            status = "Hủy";
+                        }
+                        else
+                        {
+                            status = "Chờ xử lý";
+                        }
+                        @status
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

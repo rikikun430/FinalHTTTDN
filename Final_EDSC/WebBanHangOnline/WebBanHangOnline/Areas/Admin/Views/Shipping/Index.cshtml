@@ -1,0 +1,69 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Order>
+@{
+    ViewBag.Title = "Danh sách đơn hàng cần giao";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Danh sách đơn hàng cần giao</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Khách hàng</th>
+            <th>SDT</th>
+            <th>Địa chỉ</th>
+
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Code</td>
+                <td>@order.CustomerName</td>
+                <td>@order.Phone</td>
+                <td>@order.Address</td>
+                <td>
+                    @{
+                        string status;
+                        if (order.OrderStatus == 0)
+                        {
+                            status = "Đang xử lí";
+                        }
+                        else if (order.OrderStatus == 1)
+                        {
+                            status = "Đang giao hàng";
+                        }
+                        else if (order.OrderStatus == 2)
+                        {
+                            status = "Hoàn thành";
+                        }
+                        else if (order.OrderStatus == 3)
+                        {
+                            status = "Hủy";
+                        }
+                        else
+                        {
+                            status = "Chờ xử lí";
+                        }
+                        @status
+                                }
+                            </td>
+                <td>
+                    @if (order.OrderStatus == 0) // Chờ xử lý
+                    {
+                        @Html.ActionLink("Bắt đầu giao hàng", "UpdateOrderStatus", "Shipping", new { orderId = order.Id, status = 1 }, new { @class = "btn btn-primary" })
+                    }
+                    else if (order.OrderStatus == 1) // Đang giao hàng
+                    {
+                       @Html.ActionLink("Đã giao hàng", "UpdateOrderStatus", "Shipping", new { orderId = order.Id, status = 2 }, new { @class = "btn btn-success" })
+
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>    
+</table>

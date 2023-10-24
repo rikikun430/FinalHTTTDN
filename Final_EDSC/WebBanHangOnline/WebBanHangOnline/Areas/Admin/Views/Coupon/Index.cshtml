@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Coupon>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h2>Danh sách mã giảm giá</h2>
+
+<p>
+    @Html.ActionLink("Tạo mã giảm giá mới", "Create")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã giảm giá</th>
+            <th>Phần trăm giảm giá</th>
+            <th>Ngày hết hạn</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var coupon in Model)
+        {
+            <tr>
+                <td>@coupon.Code</td>
+                <td>@coupon.DiscountPercentage%</td>
+                <td>@coupon.ExpirationDate.ToString("yyyy-MM-dd")</td>
+                <td>@(coupon.IsActive ? "Hoạt động" : "Không hoạt động")</td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = coupon.Id }) |
+                    @Html.ActionLink("Xóa", "Delete", new { id = coupon.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
